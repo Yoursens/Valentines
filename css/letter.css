@@ -1,0 +1,320 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Georgia', serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.8) 100%),
+                url('../images/valentines.jpg') center/cover no-repeat fixed;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Centered half-screen overlay image */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50%;
+    height: 100%;
+    background: url('../images/overlay.jpg') center/cover no-repeat;
+    opacity: 0.3;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Heart overlay pattern */
+body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        url('../images/heart.png'),
+        url('../images/heart 1.png'),
+        url('../images/heart 2.png'),
+        url('../images/heart 1.png'),
+        url('../images/heart.png');
+    background-size: 80px, 120px, 100px, 90px, 110px;
+    background-position: 
+        10% 20%,
+        80% 30%,
+        30% 70%,
+        90% 80%,
+        50% 50%;
+    background-repeat: no-repeat;
+    opacity: 0.15;
+    pointer-events: none;
+    z-index: 0;
+    animation: floatHearts 20s ease-in-out infinite;
+}
+
+@keyframes floatHearts {
+    0%, 100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    25% {
+        transform: translateY(-20px) rotate(5deg);
+    }
+    50% {
+        transform: translateY(-10px) rotate(-5deg);
+    }
+    75% {
+        transform: translateY(-30px) rotate(3deg);
+    }
+}
+
+/* Floating hearts background */
+.heart-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.floating-heart {
+    position: absolute;
+    font-size: 20px;
+    opacity: 0;
+    animation: float-up 6s infinite;
+}
+
+@keyframes float-up {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.7;
+    }
+    90% {
+        opacity: 0.3;
+    }
+    100% {
+        transform: translateY(-100vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* Envelope container */
+.envelope-wrapper {
+    position: relative;
+    z-index: 10;
+    cursor: pointer;
+    perspective: 2000px;
+}
+
+.envelope {
+    width: 320px;
+    height: 220px;
+    position: relative;
+    transition: transform 0.4s ease;
+    transform-style: preserve-3d;
+}
+
+.envelope:hover:not(.open) {
+    transform: translateY(-10px);
+}
+
+/* Envelope back */
+.envelope::before {
+    content: '';
+    position: absolute;
+    width: 320px;
+    height: 220px;
+    background: #c9184a;
+    border-radius: 10px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    z-index: 0;
+}
+
+/* Front flap triangles (make envelope shape) */
+.envelope::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 160px solid transparent;
+    border-right: 160px solid transparent;
+    border-bottom: 110px solid #a01538;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
+/* Top flap (the one that opens) */
+.flap {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-left: 160px solid transparent;
+    border-right: 160px solid transparent;
+    border-top: 130px solid #ff6b9d;
+    top: 0;
+    left: 0;
+    z-index: 4;
+    transform-origin: 50% 0%;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.645, 0.045, 0.355, 1),
+                z-index 0s 0s;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2));
+}
+
+.envelope.open .flap {
+    transform: rotateX(-180deg);
+    z-index: 0;
+    transition: transform 0.6s cubic-bezier(0.645, 0.045, 0.355, 1),
+                z-index 0s 0.6s;
+}
+
+/* Envelope body/base */
+.body {
+    position: absolute;
+    width: 320px;
+    height: 220px;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* Letter */
+.letter {
+    position: absolute;
+    width: 280px;
+    min-height: 400px;
+    background: linear-gradient(to bottom, #fff5f8, #ffffff);
+    padding: 35px 30px;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    top: 60px;
+    left: 20px;
+    z-index: 3;
+    transform: translateY(0);
+    transition: transform 0.7s cubic-bezier(0.645, 0.045, 0.355, 1), 
+                box-shadow 0.7s ease,
+                max-height 0.7s ease;
+    overflow: hidden;
+}
+
+.envelope:not(.open) .letter {
+    max-height: 160px;
+}
+
+.envelope.open .letter {
+    transform: translateY(-380px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+    max-height: none;
+}
+
+.letter-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.letter-header h1 {
+    color: #c9184a;
+    font-size: 26px;
+    margin-bottom: 10px;
+    font-weight: normal;
+}
+
+.letter-content {
+    color: #333;
+    line-height: 1.9;
+    font-size: 15px;
+}
+
+.letter-content p {
+    margin-bottom: 18px;
+    text-align: justify;
+}
+
+.signature {
+    text-align: right;
+    font-style: italic;
+    margin-top: 25px;
+    color: #c9184a;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+/* Instruction text */
+.instruction {
+    position: absolute;
+    bottom: -70px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 16px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    animation: fadeInOut 2.5s infinite;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+@keyframes fadeInOut {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 0.9; }
+}
+
+.envelope.open ~ .instruction {
+    display: none;
+}
+
+/* Sparkles */
+.sparkle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: white;
+    border-radius: 50%;
+    pointer-events: none;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    animation: sparkle 1.2s forwards;
+    z-index: 100;
+}
+
+@keyframes sparkle {
+    0% {
+        transform: scale(0) rotate(0deg);
+        opacity: 1;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: scale(2) translateY(-80px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .envelope {
+        transform: scale(0.85);
+    }
+    
+    .letter {
+        font-size: 13px;
+        padding: 25px 20px;
+    }
+    
+    .letter-header h1 {
+        font-size: 22px;
+    }
+}
